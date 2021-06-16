@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
-use App\Services\UserService;
+use App\Services\SecurityService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,19 +24,19 @@ class UsersController extends AbstractController
     private PaginatorInterface $paginator;
 
     /**
-     * @var UserService $userService
+     * @var SecurityService $securityService
      */
-    private UserService $userService;
+    private SecurityService $securityService;
 
     public function __construct(
         UserRepository $userRepository,
         PaginatorInterface $paginator,
-        UserService $userService
+        SecurityService $securityService
     )
     {
         $this->userRepository = $userRepository;
         $this->paginator = $paginator;
-        $this->userService = $userService;
+        $this->securityService = $securityService;
     }
 
     /**
@@ -77,7 +77,7 @@ class UsersController extends AbstractController
         if (!$user)
             return $this->redirectToRoute('users');
 
-        $this->userService->lockAccount($user, $request->request->getInt('status'));
+        $this->securityService->lockAccount($user, $request->request->getInt('status'));
 
         return $this->redirectToRoute('users');
     }

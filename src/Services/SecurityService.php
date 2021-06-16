@@ -6,7 +6,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class RegisterService
+class SecurityService
 {
     /**
      * @var EntityManagerInterface $entityManager
@@ -36,7 +36,7 @@ class RegisterService
      * @param string $password
      * @return User
      */
-    public function save(User $user, string $password): User
+    public function register(User $user, string $password): User
     {
         $user->setPassword(
             $this->userPasswordEncoder->encodePassword(
@@ -46,6 +46,19 @@ class RegisterService
         );
 
         $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @param int $status
+     * @return User
+     */
+    public function lockAccount(User $user, int $status): User
+    {
+        $user->setLocked($status);
         $this->entityManager->flush();
 
         return $user;

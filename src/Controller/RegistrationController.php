@@ -4,26 +4,25 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Services\RegisterService;
+use App\Services\SecurityService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
 {
     /**
-     * @var RegisterService $registerService
+     * @var SecurityService $securityService
      */
-    private RegisterService $registerService;
+    private SecurityService $securityService;
 
     /**
-     * @param RegisterService $registerService
+     * @param SecurityService $securityService
      */
-    public function __construct(RegisterService $registerService)
+    public function __construct(SecurityService $securityService)
     {
-        $this->registerService = $registerService;
+        $this->securityService = $securityService;
     }
 
     /**
@@ -38,7 +37,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->registerService->save($user, $form->get('plainPassword')->getData());
+            $this->securityService->register($user, $form->get('plainPassword')->getData());
 
             return $this->redirect('/login');
         }
