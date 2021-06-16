@@ -29,7 +29,8 @@
                                     onchange="this.form.submit()"
                                     class="form-check-input"
                                     type="checkbox"
-                                    value=""
+                                    name="status"
+                                    value="{% if user.isLocked %} 0 {% else %} 1 {% endif %}"
                                     id="flexCheckChecked"
                                     {% if user.isLocked %}
                                         checked

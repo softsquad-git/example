@@ -8,26 +8,27 @@ use Doctrine\ORM\EntityManagerInterface;
 class UserService
 {
     /**
-     * @var EntityManagerInterface $em
+     * @var EntityManagerInterface $entityManager
      */
-    private EntityManagerInterface $em;
+    private EntityManagerInterface $entityManager;
 
     /**
-     * @param EntityManagerInterface $em
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     /**
      * @param User $user
+     * @param int $status
      * @return User
      */
-    public function lockUnLockAccount(User $user): User
+    public function lockAccount(User $user, int $status): User
     {
-        $user->setIsLocked($user->getIsLocked() == 1 ? 0 : 1);
-        $this->em->flush();
+        $user->setLocked($status);
+        $this->entityManager->flush();
 
         return $user;
     }

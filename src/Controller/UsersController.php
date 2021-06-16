@@ -47,10 +47,14 @@ class UsersController extends AbstractController
     public function index(Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $query = $this->userRepository->getUsers();
+
         return $this->render('users/index.html.twig', [
             'users' => $this->paginator->paginate(
-                $this->userRepository->findAll(),
-                $request->query->getInt('page', 1), 10
+                $query,
+                $request->query->getInt('page', 1),
+                $request->query->getInt('limit', 10)
             ),
             'title' => 'All users'
         ]);
@@ -58,13 +62,14 @@ class UsersController extends AbstractController
 
     /**
      * @param int $accountId
+     * @param Request $request
      * @return RedirectResponse
      */
     #[Route('/user/lock-account/{accountId}', name: 'lock_account')]
-    public function lockUnLockAccount(int $accountId): RedirectResponse
+    public function lockAccount(int $accountId, Request $request): RedirectResponse
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        if ($this->getUser()->getIsLocked() == 1)
+        if ($this->getUser()->isLocked() == 1)
             return $this->redirectToRoute('users');
 
         $user = $this->userRepository->find($accountId);
@@ -72,7 +77,7 @@ class UsersController extends AbstractController
         if (!$user)
             return $this->redirectToRoute('users');
 
-        $this->userService->lockUnLockAccount($user);
+        $this->userService->lockAccount($user, $request->request->getInt('status'));
 
         return $this->redirectToRoute('users');
     }
