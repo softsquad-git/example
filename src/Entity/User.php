@@ -154,12 +154,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param bool $is_locked
+     * @param bool $isLocked
      * @return $this
      */
-    public function setLocked(bool $is_locked): self
+    public function setLocked(bool $isLocked): self
     {
-        $this->isLocked = $is_locked;
+        $this->isLocked = $isLocked;
 
         return $this;
     }

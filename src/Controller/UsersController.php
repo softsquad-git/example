@@ -69,8 +69,9 @@ class UsersController extends AbstractController
     public function lockAccount(int $accountId, Request $request): RedirectResponse
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        if ($this->getUser()->isLocked() == 1)
+        if ($this->getUser()->isLocked()) {
             return $this->redirectToRoute('users');
+        }
 
         $user = $this->userRepository->find($accountId);
 
