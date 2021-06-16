@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Is locked</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for key,user in users %}
+            <tr>
+                <th scope="row">{{ key + 1 }}</th>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if app.user.id != user.id %}
+                    <form method="post" action="{{ path('lock_account', {accountId: user.id}) }}">
+                        <div class="form-check">
+                            <input
+                                    aria-label="Lock account"
+                                    onchange="this.form.submit()"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    value=""
+                                    id="flexCheckChecked"
+                                    {% if user.isLocked %}
+                                        checked
+                                    {% endif %}
+                            >
+                        </div>
+                    </form>
+                    {% else %}
+                        You
+                        {% endif %}
+                </td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ knp_pagination_render(users) }}
+
+{% endblock %}
